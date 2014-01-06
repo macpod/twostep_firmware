@@ -44,14 +44,14 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="relays.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="relays.h" />
 		<Unit filename="stepper.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="stepper.h" />
+		<Unit filename="switches.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="switches.h" />
 		<Unit filename="twostep_common_lib.c">
 			<Option compilerVar="CC" />
 		</Unit>
