@@ -42,7 +42,7 @@ config switches:
 
 #include "uart.h"
 #include "stepper.h"
-#include "relays.h"
+#include "switches.h"
 #include "led.h"
 #include "twostep_parser.h"
 
@@ -92,7 +92,7 @@ int main(void)
 {
     init_external_crystal();
     stepper_init();
-    relays_init();
+    switches_init();
     uart_init(BAUD_115200);
     init_conf_switches();
     led_init();

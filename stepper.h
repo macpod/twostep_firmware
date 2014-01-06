@@ -59,7 +59,7 @@ along with Lasershark. If not, see <http://www.gnu.org/licenses/>.
 
 bool stepper_set_steps(uint8_t stepper_num, uint32_t steps);
 bool stepper_set_safe_steps(uint8_t stepper_number, uint32_t steps);
-bool stepper_set_step_until_relay(uint8_t stepper_num);
+bool stepper_set_step_until_switch(uint8_t stepper_num);
 bool stepper_start(uint8_t stepper_bitfield);
 bool stepper_stop(uint8_t stepper_bitfield);
 

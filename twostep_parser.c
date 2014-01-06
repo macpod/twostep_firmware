@@ -23,7 +23,7 @@ along with Lasershark. If not, see <http://www.gnu.org/licenses/>.
 #include "uart.h"
 #include "led.h"
 #include "stepper.h"
-#include "relays.h"
+#include "switches.h"
 #include "twostep_common_lib.h"
 #include <string.h>
 
@@ -88,9 +88,9 @@ static bool twostep_parser_handle_cmd(uint8_t *cmd_buf, uint8_t len)
         twostep_parser_get_param(&cmd_pos, &uint32_param1, sizeof(uint32_t)); // Step count
         res = stepper_set_safe_steps(stepper_num, uint32_param1);
         break;
-    case TWOSTEP_SET_STEP_UNTIL_RELAY:
+    case TWOSTEP_SET_STEP_UNTIL_SWITCH:
         twostep_parser_get_param(&cmd_pos, &stepper_num, sizeof(uint8_t)); // Stepper num
-        res = stepper_set_step_until_relay(stepper_num);
+        res = stepper_set_step_until_switch(stepper_num);
         break;
     case TWOSTEP_START:
         twostep_parser_get_param(&cmd_pos, &stepper_bitfield, sizeof(uint8_t)); // Stepper bitfield
@@ -167,8 +167,8 @@ static bool twostep_parser_handle_cmd(uint8_t *cmd_buf, uint8_t len)
             twostep_parser_set_param(&resp_pos, &uint16_param1, sizeof(uint16_t)); // Delay val
         }
         break;
-    case TWOSTEP_GET_RELAY_STATUS:
-        uint8_param1 = get_relay_status();
+    case TWOSTEP_GET_SWITCH_STATUS:
+        uint8_param1 = get_switch_status();
         twostep_parser_set_param(&resp_pos, &uint8_param1, sizeof(uint8_t)); // Relay status
         break;
     case TWOSTEP_GET_VERSION:

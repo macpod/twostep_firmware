@@ -20,7 +20,7 @@ along with Lasershark. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "stepper.h"
-#include "relays.h"
+#include "switches.h"
 #include <avr/interrupt.h>
 
 
@@ -33,7 +33,7 @@ static volatile uint16_t stepper_delay_count[STEPPER_MAX_STEPPER_NUM];
 static volatile uint32_t stepper_step_count[STEPPER_MAX_STEPPER_NUM];
 static volatile bool stepper_high[STEPPER_MAX_STEPPER_NUM];
 
-static volatile bool stepper_step_until_relay[STEPPER_MAX_STEPPER_NUM];
+static volatile bool stepper_step_until_switch[STEPPER_MAX_STEPPER_NUM];
 
 static volatile bool stepper_step_safely[STEPPER_MAX_STEPPER_NUM];
 
@@ -49,10 +49,10 @@ ISR(TCC4_OVF_vect)
     }
 
     for (i = 0; i < STEPPER_MAX_STEPPER_NUM; i++) {
-        if (stepper_running[i] && (stepper_step_safely[i] || stepper_step_until_relay[i])) {
-            stepper_running[i] = (i == 0) ? !relay_r1a_or_r1b_triggered() : !relay_r2a_or_r2b_triggered();
+        if (stepper_running[i] && (stepper_step_safely[i] || stepper_step_until_switch[i])) {
+            stepper_running[i] = (i == 0) ? !switch_r1a_or_r1b_triggered() : !switch_r2a_or_r2b_triggered();
         }
-        if (stepper_running[i] && !stepper_step_until_relay[i] && !stepper_high[i] && stepper_step_count[i] == 0) {
+        if (stepper_running[i] && !stepper_step_until_switch[i] && !stepper_high[i] && stepper_step_count[i] == 0) {
             stepper_running[i] = false;
         }
         if (stepper_running[i]) {
@@ -71,7 +71,7 @@ ISR(TCC4_OVF_vect)
                         PORTC.OUTCLR = PIN0_bm; // Step 2
                     }
                     stepper_high[i] = true;
-                    if (!stepper_step_until_relay[i]) {
+                    if (!stepper_step_until_switch[i]) {
                         stepper_step_count[i]--;
                     }
                 }
@@ -119,7 +119,7 @@ bool stepper_set_steps(uint8_t stepper_num, uint32_t steps)
     if (res) {
         stepper_step_count[stepper_num-1] = steps;
         stepper_high[stepper_num-1] = false;
-        stepper_step_until_relay[stepper_num-1] = false;
+        stepper_step_until_switch[stepper_num-1] = false;
         stepper_step_safely[stepper_num-1] = false;
     }
 
@@ -140,7 +140,7 @@ bool stepper_set_safe_steps(uint8_t stepper_num, uint32_t steps)
     if (res) {
         stepper_step_count[stepper_num-1] = steps;
         stepper_high[stepper_num-1] = false;
-        stepper_step_until_relay[stepper_num-1] = false;
+        stepper_step_until_switch[stepper_num-1] = false;
         stepper_step_safely[stepper_num-1] = true;
     }
 
@@ -148,7 +148,7 @@ bool stepper_set_safe_steps(uint8_t stepper_num, uint32_t steps)
 }
 
 
-bool stepper_set_step_until_relay(uint8_t stepper_num)
+bool stepper_set_step_until_switch(uint8_t stepper_num)
 {
     bool res = stepper_num_valid(stepper_num);
 
@@ -161,7 +161,7 @@ bool stepper_set_step_until_relay(uint8_t stepper_num)
     if (res) {
         stepper_step_count[stepper_num-1] = 0;
         stepper_high[stepper_num-1] = false;
-        stepper_step_until_relay[stepper_num-1] = true;
+        stepper_step_until_switch[stepper_num-1] = true;
         stepper_step_safely[stepper_num-1] = true;
     }
 
@@ -604,7 +604,7 @@ void stepper_init()
         stepper_step_count[i] = 0;
         stepper_high[i] = false;
 
-        stepper_step_until_relay[i] = false;
+        stepper_step_until_switch[i] = false;
 
         stepper_step_safely[i] = true;
         stepper_set_current(i+1, STEPPER_MIN_CURRENT_VAL);
