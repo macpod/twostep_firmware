@@ -39,6 +39,6 @@ inline bool switch_r2a_or_r2b_triggered();
 
 uint8_t get_switch_status();
 
-void switchs_init();
+void switches_init();
 
 #endif
